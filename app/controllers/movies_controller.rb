@@ -8,14 +8,21 @@ class MoviesController < ApplicationController
   def index
      @all_ratings = Movie.retrieve_all_ratings
      if params[:ratings] == nil
-	@checked_ratings = @all_ratings
+	if session[:ratings] == nil
+	   @checked_ratings = @all_ratings
+	   session[:ratings] = @checked_ratings
+	else
+	   redirect_to movies_path(:ratings=>session[:ratings],:sortby=>session[:sortby])
+	end
      elsif params[:ratings].is_a? Array
 	@checked_ratings = params[:ratings]
+        session[:ratings] = @checked_ratings
      else
      	@checked_ratings = params[:ratings].each_key.to_a
+        session[:ratings] = @checked_ratings
      end
      @hilite = params[:sortby]
-     @movies = Movie.find(:all, :order => "#{params[:sortby]}", :conditions => {:rating=>@checked_ratings})
+     @movies = Movie.find(:all, :order => "#{@hilite}", :conditions => {:rating=>@checked_ratings})
   end
 
   def new
