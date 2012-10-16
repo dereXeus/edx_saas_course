@@ -21,6 +21,7 @@ class MoviesController < ApplicationController
      	@checked_ratings = params[:ratings].each_key.to_a
         session[:ratings] = @checked_ratings
      end
+	session[:sortby] = params[:sortby]
      @hilite = params[:sortby]
      @movies = Movie.find(:all, :order => "#{@hilite}", :conditions => {:rating=>@checked_ratings})
   end
